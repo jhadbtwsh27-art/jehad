@@ -79,5 +79,9 @@ class Store:
         with self.db: self.db.execute('DELETE FROM '+table+' WHERE id=?',(record,))
     def backup(self,target):
         if Path(target).resolve()==self.path.resolve(): raise ValueError('اختر ملفًا مختلفًا')
-        with sqlite3.connect(target) as out: self.db.backup(out)
+        out=sqlite3.connect(target)
+        try:
+            self.db.backup(out)
+        finally:
+            out.close()
     def close(self): self.db.close()
